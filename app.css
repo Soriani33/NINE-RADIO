@@ -1,0 +1,404 @@
+/* app.css - NINE RADIO */
+@import "tailwindcss";
+
+:root {
+    --primary-red: #e11d48;
+    --bg-black: #0a0a0a;
+    --card-bg: #1a1a1a;
+    --text-white: #f8fafc;
+    --text-muted: #94a3b8;
+}
+
+body {
+    background-color: var(--bg-black);
+    color: var(--text-white);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Layout */
+.app-container {
+    display: grid;
+    grid-template-areas: 
+        "header header header"
+        "ticker-top ticker-top ticker-top"
+        "left main right"
+        "ticker-bottom ticker-bottom ticker-bottom";
+    grid-template-columns: 280px 1fr 320px;
+    grid-template-rows: auto auto 1fr auto;
+    height: 100vh;
+}
+
+/* Header */
+header {
+    grid-area: header;
+    background: #000;
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333;
+    z-index: 100;
+}
+
+.logo-text {
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    color: var(--primary-red);
+}
+
+.header-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    font-size: 0.8rem;
+}
+
+.btn-header {
+    background: #222;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-header:hover {
+    background: #333;
+}
+
+.btn-admin {
+    background: var(--primary-red);
+    color: white;
+}
+
+/* Tickers */
+.ticker-container {
+    background: var(--primary-red);
+    color: white;
+    height: 30px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.ticker-top { grid-area: ticker-top; }
+.ticker-bottom { grid-area: ticker-bottom; }
+
+.ticker-content {
+    display: inline-block;
+    white-space: nowrap;
+    padding-left: 100%;
+    animation: ticker 60s linear infinite;
+}
+
+@keyframes ticker {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-100%, 0, 0); }
+}
+
+/* Columns */
+.col-left {
+    grid-area: left;
+    background: #111;
+    border-right: 1px solid #222;
+    padding: 1rem;
+    overflow-y: auto;
+}
+
+.col-right {
+    grid-area: right;
+    background: #111;
+    border-left: 1px solid #222;
+    padding: 1rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.main-content {
+    grid-area: main;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: #050505;
+    position: relative;
+}
+
+/* Visual Window */
+.visual-window-container {
+    width: 100%;
+    max-width: 800px;
+    aspect-ratio: 4/3;
+    background: #000;
+    position: relative;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    border: 1px solid #333;
+    overflow: hidden;
+}
+
+.visual-content {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.visual-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2rem;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    pointer-events: none;
+}
+
+.station-name-overlay {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary-red);
+    margin-bottom: 0.25rem;
+}
+
+.track-title-overlay {
+    font-size: 1.8rem;
+    font-weight: 300;
+    color: white;
+}
+
+.channel-logo-overlay {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    opacity: 0.8;
+}
+
+.badge-mode {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: rgba(225, 29, 72, 0.8);
+    padding: 0.2rem 0.6rem;
+    border-radius: 2px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+/* Player Controls */
+.player-section {
+    width: 100%;
+    max-width: 800px;
+    margin-top: 1.5rem;
+}
+
+.audio-player-ui {
+    background: #111;
+    padding: 1rem;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.controls-row {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.btn-control {
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.1s, color 0.2s;
+}
+
+.btn-control:hover {
+    color: var(--primary-red);
+    transform: scale(1.1);
+}
+
+.btn-play-pause {
+    background: var(--primary-red);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-play-pause:hover {
+    color: white;
+    background: #f43f5e;
+}
+
+.status-line {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+/* Cards */
+.card {
+    background: var(--card-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #333;
+}
+
+.card-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+}
+
+.card-content {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.embed-container {
+    width: 100%;
+    aspect-ratio: 1/1;
+    background: #000;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Station List */
+.station-item {
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: background 0.2s;
+}
+
+.station-item:hover {
+    background: #222;
+}
+
+.station-item.active {
+    background: #333;
+    border-left: 3px solid var(--primary-red);
+}
+
+.station-icon {
+    width: 40px;
+    height: 40px;
+    background: #222;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+/* Modals */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.9);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #111;
+    width: 90%;
+    max-width: 500px;
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid #333;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    background: #222;
+    border: 1px solid #444;
+    color: white;
+    padding: 0.6rem;
+    border-radius: 4px;
+}
+
+.btn-primary {
+    background: var(--primary-red);
+    color: white;
+    width: 100%;
+    padding: 0.8rem;
+    border-radius: 4px;
+    font-weight: 700;
+    margin-top: 1rem;
+    cursor: pointer;
+}
+
+/* Admin Panel */
+.admin-only {
+    display: none;
+}
+
+body.admin-mode .admin-only {
+    display: block;
+}
+
+.admin-actions {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.btn-admin-action {
+    background: #222;
+    font-size: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+    text-align: left;
+    cursor: pointer;
+}
+
+.btn-admin-action:hover {
+    background: #333;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .app-container {
+        grid-template-columns: 200px 1fr 250px;
+    }
+}

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NINE RADIO</title>
+    <link rel="stylesheet" href="app.css">
+    <link rel="icon" href="https://picsum.photos/seed/radio/32/32">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo-text">NINE RADIO</div>
+            <div class="header-controls">
+                <div id="date-display">--/--/----</div>
+                <div id="time-display">00:00:00</div>
+                <div id="storage-info">Stockage: --</div>
+                <div class="btn-header" onclick="exportConfig()">Exporter JSON</div>
+                <div class="btn-header" onclick="triggerImport()">Importer JSON</div>
+                <div id="admin-toggle" class="btn-header btn-admin" onclick="toggleAdminMode()">Mode Admin</div>
+            </div>
+        </header>
+
+        <div class="ticker-container ticker-top">
+            <div class="ticker-content" id="news-ticker">
+                CHARGEMENT DES ACTUALITÉS... • NINE RADIO : LA RADIO INTELLIGENTE • BIENVENUE SUR VOTRE RADIO LOCALE • 
+            </div>
+        </div>
+
+        <aside class="col-left">
+            <h2 class="card-title">Stations</h2>
+            <div id="station-list">
+                <!-- Stations will be injected here -->
+            </div>
+            
+            <div class="admin-only">
+                <div class="admin-actions">
+                    <h2 class="card-title">Actions Admin</h2>
+                    <div class="btn-admin-action" onclick="openStationModal('local')">+ Nouvelle Station Locale</div>
+                    <div class="btn-admin-action" onclick="openStationModal('drive')">+ Nouvelle Station Drive</div>
+                    <div class="btn-admin-action" onclick="openStationModal('spotify')">+ Nouvelle Station Spotify</div>
+                    <div class="btn-admin-action" onclick="openStationModal('soundcloud')">+ Nouvelle Station SoundCloud</div>
+                    <div class="btn-admin-action" onclick="triggerQuickMix()">⚡ Mix Rapide</div>
+                    <div class="btn-admin-action" onclick="saveQuickMix()" id="save-mix-btn" style="display:none;">💾 Enregistrer Mix</div>
+                    <div class="btn-admin-action" onclick="openSettingsModal()">⚙️ Réglages</div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="visual-window-container" id="visual-window">
+                <div class="badge-mode" id="badge-mode">Radio</div>
+                <img id="channel-logo" class="channel-logo-overlay" src="https://picsum.photos/seed/nineradio/100/100" alt="Logo">
+                <img id="visual-img" class="visual-content" src="https://picsum.photos/seed/vibrant/800/600" alt="Visual">
+                <video id="visual-video" class="visual-content" style="display:none;" loop muted></video>
+                
+                <div class="visual-overlay">
+                    <div class="station-name-overlay" id="overlay-station-name">NINE RADIO</div>
+                    <div class="track-title-overlay" id="overlay-track-title">Prêt pour l'écoute</div>
+                </div>
+            </div>
+
+            <div class="player-section">
+                <div class="audio-player-ui">
+                    <div class="controls-row">
+                        <button class="btn-control" onclick="prevVisual()" title="Visuel précédent">⏮️</button>
+                        <button class="btn-control" onclick="toggleShuffle()" id="shuffle-btn" title="Lecture aléatoire">🔀</button>
+                        <button class="btn-control btn-play-pause" onclick="togglePlay()" id="play-btn">▶️</button>
+                        <button class="btn-control" onclick="nextTrack()" title="Titre suivant">⏭️</button>
+                        <button class="btn-control" onclick="nextVisual()" title="Visuel suivant">🖼️</button>
+                        <button class="btn-control" onclick="toggleFullscreen()" title="Plein écran">⛶</button>
+                    </div>
+                    <div class="status-line" id="status-line">Aucun média en cours</div>
+                    <input type="range" id="seek-bar" value="0" style="width:100%; accent-color: var(--primary-red);">
+                </div>
+            </div>
+        </main>
+
+        <aside class="col-right">
+            <div class="card">
+                <div class="card-title">Météo</div>
+                <div class="card-content" id="weather-info">Casablanca: 22°C, Ensoleillé</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Lune</div>
+                <div class="card-content" id="moon-info">Pleine Lune</div>
+            </div>
+            <div id="spotify-embed-container" class="embed-container" style="display:none;">
+                <!-- Spotify iframe -->
+            </div>
+            <div class="card">
+                <div class="card-title">Marchés</div>
+                <div class="card-content" id="markets-info">EUR/MAD: 10.85 • BTC: $65,420</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Astro & Sport</div>
+                <div class="card-content" id="astro-sport-info">Bélier: Journée créative. • Ligue 1: PSG 2-0 OM</div>
+            </div>
+            <div id="soundcloud-embed-container" class="embed-container" style="display:none;">
+                <!-- SoundCloud iframe -->
+            </div>
+        </aside>
+
+        <div class="ticker-container ticker-bottom">
+            <div class="ticker-content" id="finance-ticker">
+                CAC 40 : +0.45% • NASDAQ : +1.2% • REAL MADRID : QUALIFIÉ • TOUR DE FRANCE : ÉTAPE 12 • 
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal-station" class="modal-overlay">
+        <div class="modal-content">
+            <h2 id="modal-title">Nouvelle Station</h2>
+            <div class="form-group">
+                <label>Nom de la station</label>
+                <input type="text" id="station-name-input">
+            </div>
+            <div id="local-fields" style="display:none;">
+                <div class="form-group">
+                    <label>Dossier Audio (Sélectionner des fichiers)</label>
+                    <input type="file" id="audio-files-input" multiple webkitdirectory directory>
+                </div>
+                <div class="form-group">
+                    <label>Dossier Visuels (Optionnel)</label>
+                    <input type="file" id="visual-files-input" multiple webkitdirectory directory>
+                </div>
+            </div>
+            <div id="url-fields" style="display:none;">
+                <div class="form-group">
+                    <label>Lien (Drive, Spotify, SoundCloud)</label>
+                    <input type="text" id="station-url-input">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>URL Icône (Optionnel)</label>
+                <input type="text" id="station-icon-input">
+            </div>
+            <button class="btn-primary" onclick="saveStation()">Enregistrer</button>
+            <button class="btn-header" style="width:100%; margin-top:0.5rem;" onclick="closeModal()">Annuler</button>
+        </div>
+    </div>
+
+    <div id="modal-admin-login" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Accès Admin</h2>
+            <div class="form-group">
+                <label>Mot de passe</label>
+                <input type="password" id="admin-password-input">
+            </div>
+            <button class="btn-primary" onclick="verifyAdmin()">Connexion</button>
+            <button class="btn-header" style="width:100%; margin-top:0.5rem;" onclick="closeModal()">Annuler</button>
+        </div>
+    </div>
+
+    <div id="modal-settings" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Réglages</h2>
+            <div class="form-group">
+                <label>Clé API Google Drive</label>
+                <input type="text" id="drive-api-key-input">
+            </div>
+            <div class="form-group">
+                <label>Nouveau mot de passe Admin</label>
+                <input type="password" id="new-admin-password-input">
+            </div>
+            <div class="form-group">
+                <label>URL Logo Chaîne</label>
+                <input type="text" id="channel-logo-input">
+            </div>
+            <div class="form-group">
+                <label>Options Visuelles</label>
+                <select id="visual-option-input">
+                    <option value="web">Images Web Libres (Priorité)</option>
+                    <option value="local">Visuels Locaux uniquement</option>
+                    <option value="mix">Mix Web & Local</option>
+                </select>
+            </div>
+            <button class="btn-primary" onclick="saveSettings()">Sauvegarder</button>
+            <button class="btn-header" style="width:100%; margin-top:0.5rem;" onclick="closeModal()">Fermer</button>
+        </div>
+    </div>
+
+    <input type="file" id="json-import-input" style="display:none;" accept=".json" onchange="handleImport(event)">
+    <audio id="main-audio" style="display:none;"></audio>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
